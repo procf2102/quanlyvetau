@@ -1,0 +1,1678 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hệ thống Quản lý Vé Tàu</title>
+<style>
+:root {
+  --primary: #0078d7;
+  --primary-dark: #005fa3;
+  --secondary: #ff6b35;
+  --light: #f8f9fa;
+  --dark: #343a40;
+  --success: #28a745;
+  --danger: #dc3545;
+  --warning: #ffc107;
+  --gray: #6c757d;
+  --light-gray: #eef2f3;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #eef2f3 0%, #d9e4f5 100%);
+  margin: 0;
+  min-height: 100vh;
+  color: var(--dark);
+}
+
+.hidden { display: none; }
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* Header */
+header {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  color: white;
+  text-align: center;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-radius: 0 0 15px 15px;
+  margin-bottom: 30px;
+}
+
+header h1 {
+  font-size: 2.2rem;
+  margin-bottom: 10px;
+}
+
+header p {
+  opacity: 0.9;
+  font-size: 1.1rem;
+}
+
+/* Auth Screens */
+.auth-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 70vh;
+}
+
+.auth-card {
+  background: white;
+  padding: 40px;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 450px;
+  text-align: center;
+}
+
+.auth-card h2 {
+  color: var(--primary);
+  margin-bottom: 10px;
+  font-size: 1.8rem;
+}
+
+.auth-card p {
+  color: var(--gray);
+  margin-bottom: 30px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: var(--dark);
+}
+
+.form-group input, .form-group select {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.form-group input:focus, .form-group select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(0, 120, 215, 0.2);
+}
+
+.btn {
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  margin: 5px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.btn:hover {
+  background: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.btn-secondary {
+  background: var(--secondary);
+}
+
+.btn-secondary:hover {
+  background: #e55a2b;
+}
+
+.btn-success {
+  background: var(--success);
+}
+
+.btn-success:hover {
+  background: #218838;
+}
+
+.btn-danger {
+  background: var(--danger);
+}
+
+.btn-danger:hover {
+  background: #c82333;
+}
+
+.btn-warning {
+  background: var(--warning);
+  color: var(--dark);
+}
+
+.btn-warning:hover {
+  background: #e0a800;
+}
+
+.btn-sm {
+  padding: 8px 15px;
+  font-size: 0.9rem;
+}
+
+/* Cards */
+.card {
+  background: white;
+  padding: 25px;
+  margin: 20px 0;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+.card h3 {
+  color: var(--primary);
+  margin-bottom: 20px;
+  font-size: 1.4rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+/* Tables */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+th, td {
+  border: 1px solid #ddd;
+  padding: 12px;
+  text-align: left;
+}
+
+th {
+  background: var(--primary);
+  color: white;
+  font-weight: 600;
+}
+
+tr:nth-child(even) {
+  background-color: #f8f9fa;
+}
+
+tr:hover {
+  background-color: #e9ecef;
+}
+
+/* Status badges */
+.status-badge {
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.status-pending {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.status-paid {
+  background: #d1edff;
+  color: #0056b3;
+}
+
+.status-confirmed {
+  background: #d4edda;
+  color: #155724;
+}
+
+.status-active {
+  background: #d4edda;
+  color: #155724;
+}
+
+.status-inactive {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+/* Tabs */
+.tabs {
+  display: flex;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #ddd;
+  flex-wrap: wrap;
+}
+
+.tab {
+  padding: 12px 20px;
+  cursor: pointer;
+  font-weight: 600;
+  border-bottom: 3px solid transparent;
+  transition: all 0.3s ease;
+}
+
+.tab.active {
+  border-bottom: 3px solid var(--primary);
+  color: var(--primary);
+}
+
+.tab-content {
+  display: none;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+/* Stats */
+.stats-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.stat-card {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  text-align: center;
+}
+
+.stat-card h4 {
+  color: var(--gray);
+  font-size: 1rem;
+  margin-bottom: 10px;
+}
+
+.stat-card .value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+/* Payment methods */
+.payment-methods {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin: 20px 0;
+}
+
+.payment-method {
+  flex: 1;
+  min-width: 150px;
+  border: 2px solid #ddd;
+  border-radius: 10px;
+  padding: 15px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.payment-method:hover {
+  border-color: var(--primary);
+}
+
+.payment-method.selected {
+  border-color: var(--primary);
+  background-color: rgba(0, 120, 215, 0.05);
+}
+
+.payment-method i {
+  font-size: 2rem;
+  margin-bottom: 10px;
+  color: var(--primary);
+}
+
+/* Notification */
+.notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 15px 20px;
+  border-radius: 8px;
+  color: white;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  transform: translateX(150%);
+  transition: transform 0.4s ease;
+}
+
+.notification.show {
+  transform: translateX(0);
+}
+
+.notification.success {
+  background: var(--success);
+}
+
+.notification.error {
+  background: var(--danger);
+}
+
+.notification.info {
+  background: var(--primary);
+}
+
+/* Loading */
+.loading {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Form Grid */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+/* Seat Selection */
+.seat-map {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 10px;
+  margin: 20px 0;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 10px;
+}
+
+.seat {
+  width: 40px;
+  height: 40px;
+  background: #28a745;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.seat:hover {
+  transform: scale(1.1);
+}
+
+.seat.occupied {
+  background: #dc3545;
+  cursor: not-allowed;
+}
+
+.seat.selected {
+  background: #ffc107;
+  color: #000;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .container {
+    padding: 10px;
+  }
+  
+  .auth-card {
+    padding: 25px;
+  }
+  
+  .card {
+    padding: 15px;
+  }
+  
+  .stats-container {
+    grid-template-columns: 1fr;
+  }
+  
+  .payment-methods {
+    flex-direction: column;
+  }
+  
+  .btn {
+    width: 100%;
+    margin: 5px 0;
+  }
+  
+  .tabs {
+    flex-direction: column;
+  }
+  
+  .tab {
+    text-align: center;
+  }
+  
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .seat-map {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🚆 HỆ THỐNG QUẢN LÝ VÉ TÀU</h1>
+  <p>Đặt vé nhanh chóng - Di chuyển dễ dàng</p>
+</header>
+
+<div class="container">
+
+<!-- 🔐 Đăng nhập / Đăng ký -->
+<div id="loginScreen">
+  <div class="auth-container">
+    <div class="auth-card">
+      <h2>Đăng nhập hệ thống</h2>
+      <p>Vui lòng đăng nhập để tiếp tục sử dụng dịch vụ</p>
+      
+      <div class="form-group">
+        <label for="username">Tên đăng nhập</label>
+        <input id="username" placeholder="Nhập tên đăng nhập" value="admin">
+      </div>
+      
+      <div class="form-group">
+        <label for="password">Mật khẩu</label>
+        <input id="password" type="password" placeholder="Nhập mật khẩu" value="123">
+      </div>
+      
+      <button class="btn" onclick="login()">Đăng nhập</button>
+      
+      <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee;">
+        <p style="color: var(--gray); margin-bottom: 15px;">Chưa có tài khoản?</p>
+        <button class="btn btn-secondary" onclick="showRegister()">Đăng ký tài khoản mới</button>
+      </div>
+      
+      <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee;">
+        <p style="color: var(--gray); font-size: 0.9rem;">
+          <strong>Tài khoản demo:</strong><br>
+          Quản trị viên: <strong>admin</strong> / <strong>123</strong><br>
+          Khách hàng: <strong>user</strong> / <strong>123</strong>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 📝 Đăng ký -->
+<div id="registerScreen" class="hidden">
+  <div class="auth-container">
+    <div class="auth-card">
+      <h2>Đăng ký tài khoản</h2>
+      <p>Tạo tài khoản mới để sử dụng hệ thống</p>
+      
+      <div class="form-group">
+        <label for="regUsername">Tên đăng nhập</label>
+        <input id="regUsername" placeholder="Nhập tên đăng nhập">
+      </div>
+      
+      <div class="form-group">
+        <label for="regPassword">Mật khẩu</label>
+        <input id="regPassword" type="password" placeholder="Nhập mật khẩu">
+      </div>
+      
+      <div class="form-group">
+        <label for="regConfirmPassword">Xác nhận mật khẩu</label>
+        <input id="regConfirmPassword" type="password" placeholder="Nhập lại mật khẩu">
+      </div>
+      
+      <div class="form-group">
+        <label for="regFullName">Họ và tên</label>
+        <input id="regFullName" placeholder="Nhập họ và tên">
+      </div>
+      
+      <div class="form-group">
+        <label for="regEmail">Email</label>
+        <input id="regEmail" type="email" placeholder="Nhập địa chỉ email">
+      </div>
+      
+      <div class="form-group">
+        <label for="regPhone">Số điện thoại</label>
+        <input id="regPhone" placeholder="Nhập số điện thoại">
+      </div>
+      
+      <button class="btn btn-success" onclick="register()">Đăng ký</button>
+      
+      <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee;">
+        <p style="color: var(--gray);">Đã có tài khoản?</p>
+        <button class="btn" onclick="showLogin()">Quay lại đăng nhập</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 👤 Giao diện khách hàng -->
+<div id="userScreen" class="hidden">
+  <div class="card">
+    <div class="card-header">
+      <h3>Xin chào, <span id="userName"></span>!</h3>
+      <button class="btn btn-danger" onclick="logout()">Đăng xuất</button>
+    </div>
+    <p>Chào mừng bạn đến với hệ thống đặt vé tàu. Dưới đây là các chức năng có sẵn:</p>
+  </div>
+
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('datVeTab')">🎟️ Đặt vé</div>
+    <div class="tab" onclick="switchTab('veDaDatTab')">📋 Vé đã đặt</div>
+    <div class="tab" onclick="switchTab('thongTinTab')">👤 Thông tin</div>
+  </div>
+
+  <div id="datVeTab" class="tab-content active">
+    <div class="card">
+      <h3>🎟️ Đặt vé tàu</h3>
+      
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="chonChuyen">Chọn chuyến tàu</label>
+          <select id="chonChuyen"></select>
+        </div>
+        <div class="form-group">
+          <label for="soGhe">Số ghế</label>
+          <input id="soGhe" placeholder="VD: A01, B12" list="seatSuggestions">
+          <datalist id="seatSuggestions">
+            <option value="A01">
+            <option value="A02">
+            <option value="B01">
+            <option value="B02">
+            <option value="C01">
+            <option value="C02">
+          </datalist>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label for="giaVe">Giá vé (VNĐ)</label>
+        <input id="giaVe" type="number" placeholder="Nhập giá vé" readonly>
+      </div>
+      
+      <div id="seatSelection" class="hidden">
+        <h4>Chọn ghế trực quan:</h4>
+        <div class="seat-map" id="seatMap"></div>
+      </div>
+      
+      <button class="btn btn-success" onclick="datVe()">Đặt vé ngay</button>
+    </div>
+  </div>
+
+  <div id="veDaDatTab" class="tab-content">
+    <div class="card">
+      <h3>📋 Vé đã đặt</h3>
+      <div style="margin-bottom: 15px;">
+        <button class="btn btn-sm" onclick="filterTickets('all')">Tất cả</button>
+        <button class="btn btn-sm btn-warning" onclick="filterTickets('pending')">Chưa thanh toán</button>
+        <button class="btn btn-sm btn-success" onclick="filterTickets('paid')">Đã thanh toán</button>
+      </div>
+      <table id="bangVe">
+        <thead>
+          <tr>
+            <th>Chuyến</th>
+            <th>Ghế</th>
+            <th>Giá (VNĐ)</th>
+            <th>Ngày đặt</th>
+            <th>Trạng thái</th>
+            <th>Hành động</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div id="thongTinTab" class="tab-content">
+    <div class="card">
+      <h3>👤 Thông tin tài khoản</h3>
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="infoUsername">Tên đăng nhập</label>
+          <input id="infoUsername" readonly>
+        </div>
+        <div class="form-group">
+          <label for="infoFullName">Họ và tên</label>
+          <input id="infoFullName">
+        </div>
+        <div class="form-group">
+          <label for="infoEmail">Email</label>
+          <input id="infoEmail" type="email">
+        </div>
+        <div class="form-group">
+          <label for="infoPhone">Số điện thoại</label>
+          <input id="infoPhone">
+        </div>
+      </div>
+      <button class="btn btn-success" onclick="updateProfile()">Cập nhật thông tin</button>
+      
+      <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee;">
+        <h4>Thống kê cá nhân</h4>
+        <div class="stats-container">
+          <div class="stat-card">
+            <h4>Tổng số vé</h4>
+            <div class="value" id="totalTickets">0</div>
+          </div>
+          <div class="stat-card">
+            <h4>Đã thanh toán</h4>
+            <div class="value" id="paidTickets">0</div>
+          </div>
+          <div class="stat-card">
+            <h4>Tổng chi tiêu</h4>
+            <div class="value" id="totalSpent">0</div>
+            <p>VNĐ</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 💳 Thanh toán -->
+<div id="paymentScreen" class="hidden">
+  <div class="card" style="text-align:center;">
+    <h3>💳 Thanh toán vé tàu</h3>
+    <p>Vui lòng chọn phương thức thanh toán:</p>
+    
+    <div class="payment-methods">
+      <div class="payment-method" onclick="selectPayment('credit')">
+        <i>💳</i>
+        <p>Thẻ tín dụng</p>
+      </div>
+      <div class="payment-method" onclick="selectPayment('transfer')">
+        <i>🏦</i>
+        <p>Chuyển khoản</p>
+      </div>
+      <div class="payment-method" onclick="selectPayment('cash')">
+        <i>💵</i>
+        <p>Tiền mặt</p>
+      </div>
+    </div>
+    
+    <div id="paymentDetails" class="hidden" style="margin: 20px 0; text-align: left;">
+      <h4>Thông tin thanh toán:</h4>
+      <p><strong>Chuyến tàu:</strong> <span id="payTrip"></span></p>
+      <p><strong>Số ghế:</strong> <span id="paySeat"></span></p>
+      <p><strong>Số tiền:</strong> <span id="payAmount"></span> VNĐ</p>
+      <p><strong>Phương thức:</strong> <span id="payMethod"></span></p>
+    </div>
+    
+    <button class="btn btn-success" onclick="confirmPay()" id="confirmPayBtn">Xác nhận thanh toán</button>
+    <button class="btn" onclick="backToUser()">Quay lại</button>
+  </div>
+</div>
+
+<!-- 🛠️ Trang quản trị -->
+<div id="adminScreen" class="hidden">
+  <div class="card">
+    <div class="card-header">
+      <h3>🛠️ Quản trị hệ thống</h3>
+      <button class="btn btn-danger" onclick="logout()">Đăng xuất</button>
+    </div>
+    <p>Chào mừng quản trị viên! Dưới đây là các công cụ quản lý hệ thống.</p>
+  </div>
+
+  <div class="tabs">
+    <div class="tab active" onclick="switchAdminTab('quanLyChuyenTab')">🚆 Quản lý chuyến</div>
+    <div class="tab" onclick="switchAdminTab('quanLyUserTab')">👥 Quản lý người dùng</div>
+    <div class="tab" onclick="switchAdminTab('caiDatTab')">⚙️ Cài đặt hệ thống</div>
+    <div class="tab" onclick="switchAdminTab('thongKeTab')">📊 Thống kê</div>
+  </div>
+
+  <div id="quanLyChuyenTab" class="tab-content active">
+    <div class="card">
+      <h3>📋 Quản lý chuyến tàu</h3>
+      
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="soHieu">Số hiệu tàu</label>
+          <input id="soHieu" placeholder="VD: SE1, TN2">
+        </div>
+        <div class="form-group">
+          <label for="tuyen">Tuyến đường</label>
+          <input id="tuyen" placeholder="VD: Hà Nội - Sài Gòn">
+        </div>
+        <div class="form-group">
+          <label for="gia">Giá vé (VNĐ)</label>
+          <input id="gia" type="number" placeholder="Nhập giá vé">
+        </div>
+      </div>
+      
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="gioKhoiHanh">Giờ khởi hành</label>
+          <input id="gioKhoiHanh" type="time" value="08:00">
+        </div>
+        <div class="form-group">
+          <label for="soLuongGhe">Số lượng ghế</label>
+          <input id="soLuongGhe" type="number" placeholder="Số ghế" value="50">
+        </div>
+        <div class="form-group">
+          <label for="trangThaiTau">Trạng thái tàu</label>
+          <select id="trangThaiTau">
+            <option value="Đang hoạt động">Đang hoạt động</option>
+            <option value="Tạm dừng">Tạm dừng</option>
+            <option value="Bảo trì">Bảo trì</option>
+            <option value="Hủy">Hủy</option>
+          </select>
+        </div>
+      </div>
+      
+      <button class="btn btn-success" onclick="themChuyenTau()">Thêm chuyến tàu</button>
+    </div>
+
+    <div class="card">
+      <h3>📋 Danh sách chuyến tàu</h3>
+      <table id="bangChuyen">
+        <thead>
+          <tr>
+            <th>Số hiệu</th>
+            <th>Tuyến</th>
+            <th>Giờ khởi hành</th>
+            <th>Số ghế</th>
+            <th>Giá (VNĐ)</th>
+            <th>Trạng thái</th>
+            <th>Hành động</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div id="quanLyUserTab" class="tab-content">
+    <div class="card">
+      <h3>👥 Quản lý người dùng</h3>
+      <table id="bangUsers">
+        <thead>
+          <tr>
+            <th>Tên đăng nhập</th>
+            <th>Họ tên</th>
+            <th>Email</th>
+            <th>Số điện thoại</th>
+            <th>Vai trò</th>
+            <th>Trạng thái</th>
+            <th>Hành động</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div id="caiDatTab" class="tab-content">
+    <div class="card">
+      <h3>⚙️ Cài đặt hệ thống</h3>
+      
+      <div class="form-group">
+        <label for="tenCongTy">Tên công ty</label>
+        <input id="tenCongTy" value="Công ty Đường sắt Việt Nam">
+      </div>
+      
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="phiDichVu">Phí dịch vụ (%)</label>
+          <input id="phiDichVu" type="number" value="5" min="0" max="20">
+        </div>
+        <div class="form-group">
+          <label for="thoiGianHuyVe">Thời gian hủy vé (phút)</label>
+          <input id="thoiGianHuyVe" type="number" value="30" min="0">
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label for="thongBaoHeThong">Thông báo hệ thống</label>
+        <textarea id="thongBaoHeThong" style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ddd; min-height: 100px;" placeholder="Nhập thông báo hệ thống..."></textarea>
+      </div>
+      
+      <button class="btn btn-success" onclick="luuCaiDat()">Lưu cài đặt</button>
+    </div>
+  </div>
+
+  <div id="thongKeTab" class="tab-content">
+    <div class="card">
+      <h3>📊 Thống kê doanh thu</h3>
+      <div class="stats-container">
+        <div class="stat-card">
+          <h4>Tổng số vé</h4>
+          <div class="value" id="soVe">0</div>
+        </div>
+        <div class="stat-card">
+          <h4>Doanh thu</h4>
+          <div class="value" id="tongTien">0</div>
+          <p>VNĐ</p>
+        </div>
+        <div class="stat-card">
+          <h4>Vé chưa thanh toán</h4>
+          <div class="value" id="veChuaThanhToan">0</div>
+        </div>
+        <div class="stat-card">
+          <h4>Vé đã thanh toán</h4>
+          <div class="value" id="veDaThanhToan">0</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>📈 Top chuyến tàu phổ biến</h3>
+      <table id="topChuyenTau">
+        <thead>
+          <tr>
+            <th>Chuyến tàu</th>
+            <th>Số vé bán</th>
+            <th>Doanh thu</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<div id="notification" class="notification"></div>
+
+<script>
+// ======================= DỮ LIỆU =======================
+let users = JSON.parse(localStorage.getItem("users") || "[]");
+let chuyenTau = JSON.parse(localStorage.getItem("chuyenTau") || "[]");
+let veTau = JSON.parse(localStorage.getItem("veTau") || "[]");
+let caiDat = JSON.parse(localStorage.getItem("caiDat") || '{"tenCongTy":"Công ty Đường sắt Việt Nam","phiDichVu":5,"thoiGianHuyVe":30,"thongBaoHeThong":"Chào mừng đến với hệ thống đặt vé tàu!"}');
+let currentUser = JSON.parse(localStorage.getItem("loggedInUser") || "null");
+let payIndex = null;
+let selectedPaymentMethod = null;
+let currentTicketFilter = 'all';
+
+// Khởi tạo dữ liệu mẫu nếu chưa có
+function initializeData() {
+  if (users.length === 0) {
+    users = [
+      { 
+        user: "admin", 
+        pass: "123", 
+        role: "admin",
+        fullName: "Quản trị viên",
+        email: "admin@railway.com",
+        phone: "0123456789",
+        status: "active",
+        createdAt: new Date().toISOString()
+      },
+      { 
+        user: "user", 
+        pass: "123", 
+        role: "user",
+        fullName: "Người dùng Demo",
+        email: "user@example.com",
+        phone: "0987654321",
+        status: "active",
+        createdAt: new Date().toISOString()
+      }
+    ];
+    localStorage.setItem("users", JSON.stringify(users));
+  }
+
+  if (chuyenTau.length === 0) {
+    chuyenTau = [
+      { 
+        soHieu: "SE1", 
+        tuyen: "Hà Nội - Sài Gòn", 
+        gia: "500000", 
+        gioKhoiHanh: "08:00", 
+        soLuongGhe: 50, 
+        trangThai: "Đang hoạt động",
+        createdAt: new Date().toISOString()
+      },
+      { 
+        soHieu: "SE2", 
+        tuyen: "Sài Gòn - Hà Nội", 
+        gia: "500000", 
+        gioKhoiHanh: "14:00", 
+        soLuongGhe: 50, 
+        trangThai: "Đang hoạt động",
+        createdAt: new Date().toISOString()
+      },
+      { 
+        soHieu: "TN1", 
+        tuyen: "Hà Nội - Hải Phòng", 
+        gia: "150000", 
+        gioKhoiHanh: "07:30", 
+        soLuongGhe: 40, 
+        trangThai: "Đang hoạt động",
+        createdAt: new Date().toISOString()
+      },
+      { 
+        soHieu: "TN2", 
+        tuyen: "Hải Phòng - Hà Nội", 
+        gia: "150000", 
+        gioKhoiHanh: "16:00", 
+        soLuongGhe: 40, 
+        trangThai: "Tạm dừng",
+        createdAt: new Date().toISOString()
+      }
+    ];
+    localStorage.setItem("chuyenTau", JSON.stringify(chuyenTau));
+  }
+}
+
+// Gọi hàm khởi tạo dữ liệu
+initializeData();
+
+// ======================= HIỂN THỊ THÔNG BÁO =======================
+function showNotification(message, type = "info") {
+  const notification = document.getElementById("notification");
+  notification.textContent = message;
+  notification.className = `notification ${type}`;
+  notification.classList.add("show");
+  
+  setTimeout(() => {
+    notification.classList.remove("show");
+  }, 3000);
+}
+
+// ======================= GIAO DIỆN =======================
+function show(screen) {
+  ["loginScreen", "registerScreen", "userScreen", "paymentScreen", "adminScreen"].forEach(id => {
+    document.getElementById(id).classList.add("hidden");
+  });
+  document.getElementById(screen).classList.remove("hidden");
+}
+
+function showRegister() {
+  show("registerScreen");
+}
+
+function showLogin() {
+  show("loginScreen");
+}
+
+function switchTab(tabId) {
+  document.querySelectorAll('.tab-content').forEach(tab => {
+    tab.classList.remove('active');
+  });
+  
+  document.getElementById(tabId).classList.add('active');
+  
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.classList.remove('active');
+  });
+  
+  event.target.classList.add('active');
+  
+  if (tabId === 'veDaDatTab') {
+    loadVe();
+  } else if (tabId === 'thongTinTab') {
+    loadUserInfo();
+  } else if (tabId === 'datVeTab') {
+    loadChuyenForUser();
+  }
+}
+
+function switchAdminTab(tabId) {
+  document.querySelectorAll('.tab-content').forEach(tab => {
+    tab.classList.remove('active');
+  });
+  
+  document.getElementById(tabId).classList.add('active');
+  
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.classList.remove('active');
+  });
+  
+  event.target.classList.add('active');
+  
+  if (tabId === 'thongKeTab') {
+    loadAdminStats();
+  } else if (tabId === 'caiDatTab') {
+    loadCaiDat();
+  } else if (tabId === 'quanLyUserTab') {
+    loadUsers();
+  }
+}
+
+// ======================= ĐĂNG KÝ / ĐĂNG NHẬP =======================
+function register() {
+  const username = document.getElementById('regUsername').value.trim();
+  const password = document.getElementById('regPassword').value.trim();
+  const confirmPassword = document.getElementById('regConfirmPassword').value.trim();
+  const fullName = document.getElementById('regFullName').value.trim();
+  const email = document.getElementById('regEmail').value.trim();
+  const phone = document.getElementById('regPhone').value.trim();
+  
+  if (!username || !password || !confirmPassword || !fullName || !email) {
+    return showNotification("Vui lòng điền đầy đủ thông tin!", "error");
+  }
+  
+  if (password !== confirmPassword) {
+    return showNotification("Mật khẩu xác nhận không khớp!", "error");
+  }
+  
+  if (users.find(u => u.user === username)) {
+    return showNotification("Tên đăng nhập đã tồn tại!", "error");
+  }
+  
+  if (users.find(u => u.email === email)) {
+    return showNotification("Email đã được sử dụng!", "error");
+  }
+  
+  const newUser = {
+    user: username,
+    pass: password,
+    role: "user",
+    fullName: fullName,
+    email: email,
+    phone: phone,
+    status: "active",
+    createdAt: new Date().toISOString()
+  };
+  
+  users.push(newUser);
+  localStorage.setItem("users", JSON.stringify(users));
+  
+  showNotification("Đăng ký thành công! Vui lòng đăng nhập.", "success");
+  showLogin();
+}
+
+function login() {
+  const username = document.getElementById('username').value.trim();
+  const password = document.getElementById('password').value.trim();
+  
+  console.log("Đang đăng nhập với:", username, password);
+  console.log("Danh sách users:", users);
+  
+  const user = users.find(u => u.user === username && u.pass === password);
+  
+  if (!user) {
+    console.log("Không tìm thấy user hoặc sai mật khẩu");
+    return showNotification("Sai tài khoản hoặc mật khẩu!", "error");
+  }
+  
+  // SỬA LỖI: Chỉ kiểm tra status cho user thường, admin luôn được đăng nhập
+  if (user.role !== "admin" && user.status !== "active") {
+    return showNotification("Tài khoản đã bị khóa!", "error");
+  }
+  
+  currentUser = user;
+  localStorage.setItem("loggedInUser", JSON.stringify(user));
+  
+  console.log("Đăng nhập thành công:", user);
+  
+  if (user.role === "admin") {
+    loadAdmin();
+    showNotification(`Chào mừng quản trị viên ${user.fullName || user.user}!`, "success");
+  } else {
+    loadUser();
+    showNotification(`Chào mừng ${user.fullName || user.user} đến với hệ thống!`, "success");
+  }
+}
+
+function logout() {
+  localStorage.removeItem("loggedInUser");
+  currentUser = null;
+  show("loginScreen");
+  showNotification("Đã đăng xuất thành công!", "info");
+}
+
+// ======================= NGƯỜI DÙNG =======================
+function loadUser() {
+  show("userScreen");
+  document.getElementById('userName').textContent = currentUser.fullName || currentUser.user;
+  loadUserInfo();
+  loadChuyenForUser();
+  loadVe();
+}
+
+function loadChuyenForUser() {
+  const chonChuyen = document.getElementById('chonChuyen');
+  const activeTrains = chuyenTau.filter(c => c.trangThai === "Đang hoạt động");
+  
+  chonChuyen.innerHTML = activeTrains.map(c => 
+    `<option value="${c.soHieu} - ${c.tuyen}" data-gia="${c.gia}">${c.soHieu} - ${c.tuyen} (${parseInt(c.gia).toLocaleString()} VNĐ) - ${c.gioKhoiHanh}</option>`
+  ).join("");
+  
+  chonChuyen.addEventListener('change', function() {
+    const selectedOption = this.options[this.selectedIndex];
+    const gia = selectedOption.getAttribute('data-gia');
+    document.getElementById('giaVe').value = gia;
+    
+    // Hiển thị bản đồ ghế
+    generateSeatMap();
+  });
+  
+  if (chonChuyen.options.length > 0) {
+    const gia = chonChuyen.options[0].getAttribute('data-gia');
+    document.getElementById('giaVe').value = gia;
+    generateSeatMap();
+  }
+}
+
+function generateSeatMap() {
+  const seatMap = document.getElementById('seatMap');
+  const selectedTrain = document.getElementById('chonChuyen').value;
+  
+  if (!selectedTrain) {
+    document.getElementById('seatSelection').classList.add('hidden');
+    return;
+  }
+  
+  // Lấy thông tin chuyến tàu
+  const train = chuyenTau.find(c => `${c.soHieu} - ${c.tuyen}` === selectedTrain);
+  if (!train) return;
+  
+  // Tạo bản đồ ghế
+  seatMap.innerHTML = '';
+  const rows = Math.ceil(train.soLuongGhe / 10);
+  let seatNumber = 1;
+  
+  for (let i = 0; i < rows; i++) {
+    for (let j = 0; j < 10; j++) {
+      if (seatNumber > train.soLuongGhe) break;
+      
+      const seatCode = `${String.fromCharCode(65 + i)}${seatNumber.toString().padStart(2, '0')}`;
+      const isOccupied = veTau.some(v => v.chuyen === selectedTrain && v.ghe === seatCode);
+      
+      const seat = document.createElement('div');
+      seat.className = `seat ${isOccupied ? 'occupied' : ''}`;
+      seat.textContent = seatNumber;
+      seat.title = `Ghế ${seatCode}`;
+      
+      if (!isOccupied) {
+        seat.addEventListener('click', () => {
+          document.querySelectorAll('.seat').forEach(s => s.classList.remove('selected'));
+          seat.classList.add('selected');
+          document.getElementById('soGhe').value = seatCode;
+        });
+      }
+      
+      seatMap.appendChild(seat);
+      seatNumber++;
+    }
+  }
+  
+  document.getElementById('seatSelection').classList.remove('hidden');
+}
+
+function loadUserInfo() {
+  document.getElementById('infoUsername').value = currentUser.user;
+  document.getElementById('infoFullName').value = currentUser.fullName || '';
+  document.getElementById('infoEmail').value = currentUser.email || '';
+  document.getElementById('infoPhone').value = currentUser.phone || '';
+  
+  // Thống kê cá nhân
+  const userTickets = veTau.filter(v => v.nguoi === currentUser.user);
+  const paidTickets = userTickets.filter(v => v.trangThai === "Đã thanh toán");
+  const totalSpent = paidTickets.reduce((sum, v) => sum + parseInt(v.gia), 0);
+  
+  document.getElementById('totalTickets').textContent = userTickets.length;
+  document.getElementById('paidTickets').textContent = paidTickets.length;
+  document.getElementById('totalSpent').textContent = totalSpent.toLocaleString();
+}
+
+function updateProfile() {
+  const fullName = document.getElementById('infoFullName').value.trim();
+  const email = document.getElementById('infoEmail').value.trim();
+  const phone = document.getElementById('infoPhone').value.trim();
+  
+  if (!fullName || !email) {
+    return showNotification("Vui lòng điền đầy đủ thông tin!", "error");
+  }
+  
+  // Cập nhật thông tin người dùng
+  const userIndex = users.findIndex(u => u.user === currentUser.user);
+  if (userIndex !== -1) {
+    users[userIndex].fullName = fullName;
+    users[userIndex].email = email;
+    users[userIndex].phone = phone;
+    
+    // Cập nhật currentUser
+    currentUser.fullName = fullName;
+    currentUser.email = email;
+    currentUser.phone = phone;
+    
+    localStorage.setItem("users", JSON.stringify(users));
+    localStorage.setItem("loggedInUser", JSON.stringify(currentUser));
+    
+    showNotification("Cập nhật thông tin thành công!", "success");
+    loadUserInfo();
+  }
+}
+
+function datVe() {
+  const ch = document.getElementById('chonChuyen').value;
+  const ghe = document.getElementById('soGhe').value;
+  const gia = document.getElementById('giaVe').value;
+  
+  if (!ch || !ghe || !gia) return showNotification("Vui lòng điền đầy đủ thông tin!", "error");
+  
+  // Kiểm tra ghế đã được đặt chưa
+  const existingSeat = veTau.find(v => v.chuyen === ch && v.ghe === ghe);
+  if (existingSeat) return showNotification("Ghế này đã được đặt! Vui lòng chọn ghế khác.", "error");
+  
+  veTau.push({ 
+    nguoi: currentUser.user, 
+    chuyen: ch, 
+    ghe, 
+    gia, 
+    trangThai: "Chưa thanh toán",
+    ngayDat: new Date().toLocaleDateString('vi-VN'),
+    createdAt: new Date().toISOString()
+  });
+  
+  localStorage.setItem("veTau", JSON.stringify(veTau));
+  showNotification("Đặt vé thành công! Vui lòng thanh toán để xác nhận.", "success");
+  loadVe();
+  generateSeatMap();
+  
+  // Reset form
+  document.getElementById('soGhe').value = "";
+  document.querySelectorAll('.seat').forEach(s => s.classList.remove('selected'));
+}
+
+function filterTickets(filter) {
+  currentTicketFilter = filter;
+  loadVe();
+}
+
+function loadVe() {
+  const tb = document.querySelector("#bangVe tbody");
+  let userTickets = veTau.filter(v => v.nguoi === currentUser.user);
+  
+  // Lọc theo trạng thái
+  if (currentTicketFilter === 'pending') {
+    userTickets = userTickets.filter(v => v.trangThai === "Chưa thanh toán");
+  } else if (currentTicketFilter === 'paid') {
+    userTickets = userTickets.filter(v => v.trangThai === "Đã thanh toán");
+  }
+  
+  tb.innerHTML = "";
+  
+  if (userTickets.length === 0) {
+    tb.innerHTML = `<tr><td colspan="6" style="text-align: center;">Không có vé nào.</td></tr>`;
+    return;
+  }
+  
+  userTickets.forEach((v, i) => {
+    const statusClass = v.trangThai === "Đã thanh toán" ? "status-confirmed" : "status-pending";
+    
+    tb.innerHTML += `
+      <tr>
+        <td>${v.chuyen}</td>
+        <td>${v.ghe}</td>
+        <td>${parseInt(v.gia).toLocaleString()}</td>
+        <td>${v.ngayDat}</td>
+        <td><span class="status-badge ${statusClass}">${v.trangThai}</span></td>
+        <td>
+          ${v.trangThai === "Chưa thanh toán" ? 
+            `<button class="btn btn-sm btn-warning" onclick="mothanhToan(${i})">Thanh toán</button>
+             <button class="btn btn-sm btn-danger" onclick="huyVe(${i})">Hủy vé</button>` : 
+            `<span class="status-badge status-paid">Đã xác nhận</span>`
+          }
+        </td>
+      </tr>`;
+  });
+}
+
+function huyVe(index) {
+  if (confirm("Bạn có chắc chắn muốn hủy vé này?")) {
+    veTau.splice(index, 1);
+    localStorage.setItem("veTau", JSON.stringify(veTau));
+    showNotification("Đã hủy vé thành công!", "success");
+    loadVe();
+    generateSeatMap();
+  }
+}
+
+function mothanhToan(i) {
+  payIndex = i;
+  const ticket = veTau[payIndex];
+  
+  document.getElementById('payTrip').textContent = ticket.chuyen;
+  document.getElementById('paySeat').textContent = ticket.ghe;
+  document.getElementById('payAmount').textContent = parseInt(ticket.gia).toLocaleString();
+  
+  show("paymentScreen");
+}
+
+function backToUser() {
+  payIndex = null;
+  selectedPaymentMethod = null;
+  document.querySelectorAll('.payment-method').forEach(method => {
+    method.classList.remove('selected');
+  });
+  document.getElementById('paymentDetails').classList.add('hidden');
+  document.getElementById('confirmPayBtn').disabled = true;
+  
+  show("userScreen");
+}
+
+// ======================= THANH TOÁN =======================
+function selectPayment(method) {
+  selectedPaymentMethod = method;
+  
+  document.querySelectorAll('.payment-method').forEach(m => {
+    m.classList.remove('selected');
+  });
+  event.target.closest('.payment-method').classList.add('selected');
+  
+  document.getElementById('paymentDetails').classList.remove('hidden');
+  
+  let methodText = "";
+  switch(method) {
+    case 'credit': methodText = "Thẻ tín dụng"; break;
+    case 'transfer': methodText = "Chuyển khoản ngân hàng"; break;
+    case 'cash': methodText = "Tiền mặt"; break;
+  }
+  document.getElementById('payMethod').textContent = methodText;
+  
+  document.getElementById('confirmPayBtn').disabled = false;
+}
+
+function confirmPay() {
+  if (payIndex !== null && selectedPaymentMethod) {
+    const btn = document.getElementById('confirmPayBtn');
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '<span class="loading"></span> Đang xử lý...';
+    btn.disabled = true;
+    
+    setTimeout(() => {
+      veTau[payIndex].trangThai = "Đã thanh toán";
+      veTau[payIndex].phuongThuc = selectedPaymentMethod;
+      veTau[payIndex].ngayThanhToan = new Date().toLocaleDateString('vi-VN');
+      
+      localStorage.setItem("veTau", JSON.stringify(veTau));
+      
+      btn.innerHTML = originalText;
+      showNotification("Thanh toán thành công! Vé của bạn đã được xác nhận.", "success");
+      
+      show("userScreen");
+      loadVe();
+      loadUserInfo();
+      generateSeatMap();
+      
+      payIndex = null;
+      selectedPaymentMethod = null;
+    }, 1500);
+  }
+}
+
+// ======================= ADMIN =======================
+function loadAdmin() {
+  show("adminScreen");
+  loadChuyen();
+  loadAdminStats();
+  loadCaiDat();
+  loadUsers();
+}
+
+function loadCaiDat() {
+  document.getElementById('tenCongTy').value = caiDat.tenCongTy;
+  document.getElementById('phiDichVu').value = caiDat.phiDichVu;
+  document.getElementById('thoiGianHuyVe').value = caiDat.thoiGianHuyVe;
+  document.getElementById('thongBaoHeThong').value = caiDat.thongBaoHeThong || '';
+}
+
+function luuCaiDat() {
+  caiDat.tenCongTy = document.getElementById('tenCongTy').value;
+  caiDat.phiDichVu = parseInt(document.getElementById('phiDichVu').value);
+  caiDat.thoiGianHuyVe = parseInt(document.getElementById('thoiGianHuyVe').value);
+  caiDat.thongBaoHeThong = document.getElementById('thongBaoHeThong').value;
+  
+  localStorage.setItem("caiDat", JSON.stringify(caiDat));
+  showNotification("Đã lưu cài đặt hệ thống!", "success");
+}
+
+function themChuyenTau() {
+  const soHieuVal = document.getElementById('soHieu').value.trim();
+  const tuyenVal = document.getElementById('tuyen').value.trim();
+  const giaVal = document.getElementById('gia').value.trim();
+  const gioKhoiHanhVal = document.getElementById('gioKhoiHanh').value;
+  const soLuongGheVal = document.getElementById('soLuongGhe').value;
+  const trangThaiVal = document.getElementById('trangThaiTau').value;
+  
+  if (!soHieuVal || !tuyenVal || !giaVal) {
+    return showNotification("Vui lòng điền đầy đủ thông tin!", "error");
+  }
+  
+  if (chuyenTau.find(c => c.soHieu === soHieuVal)) {
+    return showNotification("Số hiệu tàu đã tồn tại!", "error");
+  }
+  
+  chuyenTau.push({ 
+    soHieu: soHieuVal, 
+    tuyen: tuyenVal, 
+    gia: giaVal,
+    gioKhoiHanh: gioKhoiHanhVal,
+    soLuongGhe: soLuongGheVal,
+    trangThai: trangThaiVal,
+    createdAt: new Date().toISOString()
+  });
+  
+  localStorage.setItem("chuyenTau", JSON.stringify(chuyenTau));
+  
+  showNotification("Thêm chuyến tàu thành công!", "success");
+  loadChuyen();
+  
+  // Reset form
+  document.getElementById('soHieu').value = "";
+  document.getElementById('tuyen').value = "";
+  document.getElementById('gia').value = "";
+}
+
+function loadChuyen() {
+  const tb = document.querySelector("#bangChuyen tbody");
+  tb.innerHTML = "";
+  
+  if (chuyenTau.length === 0) {
+    tb.innerHTML = `<tr><td colspan="7" style="text-align: center;">Chưa có chuyến tàu nào.</td></tr>`;
+    return;
+  }
+  
+  chuyenTau.forEach((c, i) => {
+    const statusClass = c.trangThai === "Đang hoạt động" ? "status-active" : 
+                       c.trangThai === "Tạm dừng" ? "status-pending" : "status-inactive";
+    
+    tb.innerHTML += `
+      <tr>
+        <td>${c.soHieu}</td>
+        <td>${c.tuyen}</td>
+        <td>${c.gioKhoiHanh}</td>
+        <td>${c.soLuongGhe}</td>
+        <td>${parseInt(c.gia).toLocaleString()}</td>
+        <td><span class="status-badge ${statusClass}">${c.trangThai}</span></td>
+        <td>
+          <button class="btn btn-sm btn-warning" onclick="thayDoiTrangThai(${i})">Đổi trạng thái</button>
+          <button class="btn btn-sm btn-danger" onclick="xoaChuyenTau(${i})">Xóa</button>
+        </td>
+      </tr>`;
+  });
+}
+
+function thayDoiTrangThai(index) {
+  const currentStatus = chuyenTau[index].trangThai;
+  const statuses = ["Đang hoạt động", "Tạm dừng", "Bảo trì", "Hủy"];
+  const currentIndex = statuses.indexOf(currentStatus);
+  const nextIndex = (currentIndex + 1) % statuses.length;
+  
+  chuyenTau[index].trangThai = statuses[nextIndex];
+  localStorage.setItem("chuyenTau", JSON.stringify(chuyenTau));
+  showNotification(`Đã thay đổi trạng thái thành: ${statuses[nextIndex]}`, "success");
+  loadChuyen();
+}
+
+function xoaChuyenTau(index) {
+  if (confirm("Bạn có chắc chắn muốn xóa chuyến tàu này?")) {
+    // Kiểm tra xem có vé nào đang sử dụng chuyến tàu này không
+    const train = chuyenTau[index];
+    const trainTickets = veTau.filter(v => v.chuyen === `${train.soHieu} - ${train.tuyen}`);
+    
+    if (trainTickets.length > 0) {
+      return showNotification("Không thể xóa chuyến tàu đang có vé đã đặt!", "error");
+    }
+    
+    chuyenTau.splice(index, 1);
+    localStorage.setItem("chuyenTau", JSON.stringify(chuyenTau));
+    showNotification("Đã xóa chuyến tàu!", "success");
+    loadChuyen();
+  }
+}
+
+function loadUsers() {
+  const tb = document.querySelector("#bangUsers tbody");
+  tb.innerHTML = "";
+  
+  users.forEach((u, i) => {
+    if (u.user === "admin") return; // Không hiển thị tài khoản admin
+    
+    const statusClass = u.status === "active" ? "status-active" : "status-inactive";
+    
+    tb.innerHTML += `
+      <tr>
+        <td>${u.user}</td>
+        <td>${u.fullName || 'Chưa cập nhật'}</td>
+        <td>${u.email || 'Chưa cập nhật'}</td>
+        <td>${u.phone || 'Chưa cập nhật'}</td>
+        <td>${u.role === "admin" ? "Quản trị viên" : "Người dùng"}</td>
+        <td><span class="status-badge ${statusClass}">${u.status === "active" ? "Hoạt động" : "Khóa"}</span></td>
+        <td>
+          <button class="btn btn-sm btn-warning" onclick="thayDoiTrangThaiUser(${i})">${u.status === "active" ? "Khóa" : "Mở khóa"}</button>
+          <button class="btn btn-sm btn-danger" onclick="xoaUser(${i})">Xóa</button>
+        </td>
+      </tr>`;
+  });
+}
+
+function thayDoiTrangThaiUser(index) {
+  users[index].status = users[index].status === "active" ? "inactive" : "active";
+  localStorage.setItem("users", JSON.stringify(users));
+  showNotification(`Đã ${users[index].status === "active" ? "mở khóa" : "khóa"} tài khoản!`, "success");
+  loadUsers();
+}
+
+function xoaUser(index) {
+  if (confirm("Bạn có chắc chắn muốn xóa người dùng này?")) {
+    const username = users[index].user;
+    
+    // Kiểm tra xem người dùng có vé nào không
+    const userTickets = veTau.filter(v => v.nguoi === username);
+    if (userTickets.length > 0) {
+      return showNotification("Không thể xóa người dùng đang có vé đã đặt!", "error");
+    }
+    
+    users.splice(index, 1);
+    localStorage.setItem("users", JSON.stringify(users));
+    showNotification("Đã xóa người dùng!", "success");
+    loadUsers();
+  }
+}
+
+function loadAdminStats() {
+  const daDat = veTau.filter(v => v.trangThai === "Đã thanh toán");
+  const chuaThanhToan = veTau.filter(v => v.trangThai === "Chưa thanh toán");
+  
+  document.getElementById('soVe').textContent = veTau.length;
+  document.getElementById('tongTien').textContent = daDat.reduce((t, v) => t + parseInt(v.gia), 0).toLocaleString();
+  document.getElementById('veChuaThanhToan').textContent = chuaThanhToan.length;
+  document.getElementById('veDaThanhToan').textContent = daDat.length;
+  
+  // Top chuyến tàu phổ biến
+  const trainStats = {};
+  veTau.forEach(v => {
+    if (!trainStats[v.chuyen]) {
+      trainStats[v.chuyen] = { count: 0, revenue: 0 };
+    }
+    trainStats[v.chuyen].count++;
+    if (v.trangThai === "Đã thanh toán") {
+      trainStats[v.chuyen].revenue += parseInt(v.gia);
+    }
+  });
+  
+  const topTrains = Object.entries(trainStats)
+    .sort((a, b) => b[1].count - a[1].count)
+    .slice(0, 5);
+  
+  const topTrainsTable = document.querySelector("#topChuyenTau tbody");
+  topTrainsTable.innerHTML = "";
+  
+  if (topTrains.length === 0) {
+    topTrainsTable.innerHTML = `<tr><td colspan="3" style="text-align: center;">Chưa có dữ liệu thống kê.</td></tr>`;
+    return;
+  }
+  
+  topTrains.forEach(([train, stats]) => {
+    topTrainsTable.innerHTML += `
+      <tr>
+        <td>${train}</td>
+        <td>${stats.count}</td>
+        <td>${stats.revenue.toLocaleString()} VNĐ</td>
+      </tr>`;
+  });
+}
+
+// ======================= KHỞI ĐỘNG =======================
+if (currentUser) {
+  if (currentUser.role === "admin") loadAdmin();
+  else loadUser();
+} else {
+  show("loginScreen");
+}
+
+// Xử lý Enter để đăng nhập
+document.getElementById('password')?.addEventListener('keypress', function(e) {
+  if (e.key === 'Enter') {
+    login();
+  }
+});
+
+document.getElementById('regConfirmPassword')?.addEventListener('keypress', function(e) {
+  if (e.key === 'Enter') {
+    register();
+  }
+});
+</script>
+</body>
+</html>
